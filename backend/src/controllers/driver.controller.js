@@ -14,10 +14,12 @@ const getProfile = async (req, res, next) => {
     const { rows } = await query(
       `SELECT
          d.*,
+         v.make AS vehicle_make, v.model AS vehicle_model, v.year AS vehicle_year, v.plate_number AS vehicle_number, v.color AS vehicle_color, v.vehicle_type,
          u.name, u.email, u.phone, u.profile_pic,
          u.is_email_verified, u.created_at AS user_created_at
        FROM drivers d
        JOIN users u ON u.id = d.user_id
+       LEFT JOIN vehicles v ON v.driver_id = d.id AND v.is_active = TRUE
        WHERE d.user_id = $1`,
       [req.user.id]
     );
@@ -59,19 +61,35 @@ const updateProfile = async (req, res, next) => {
       );
     }
 
+    // Get driver ID
+    const { rows: dRows } = await query('SELECT id FROM drivers WHERE user_id = $1', [req.user.id]);
+    const driverId = dRows[0]?.id;
+
     // Update drivers table
     const driverUpdates = [];
     const driverVals = [];
     let j = 1;
-    if (vehicle_number) { driverUpdates.push(`vehicle_number = $${j++}`); driverVals.push(vehicle_number); }
-    if (vehicle_model)  { driverUpdates.push(`vehicle_model = $${j++}`);  driverVals.push(vehicle_model); }
-    if (vehicle_color)  { driverUpdates.push(`vehicle_color = $${j++}`);  driverVals.push(vehicle_color); }
-    if (city)           { driverUpdates.push(`city = $${j++}`);           driverVals.push(city); }
-    if (driverUpdates.length) {
-      driverVals.push(req.user.id);
+    if (city) { driverUpdates.push(`current_city = $${j++}`); driverVals.push(city); }
+    if (driverUpdates.length && driverId) {
+      driverVals.push(driverId);
       await query(
-        `UPDATE drivers SET ${driverUpdates.join(', ')}, updated_at = NOW() WHERE user_id = $${j}`,
+        `UPDATE drivers SET ${driverUpdates.join(', ')}, updated_at = NOW() WHERE id = $${j}`,
         driverVals
+      );
+    }
+
+    // Update vehicles table
+    const vehicleUpdates = [];
+    const vehicleVals = [];
+    let k = 1;
+    if (vehicle_number) { vehicleUpdates.push(`plate_number = $${k++}`); vehicleVals.push(vehicle_number); }
+    if (vehicle_model)  { vehicleUpdates.push(`model = $${k++}`);  vehicleVals.push(vehicle_model); }
+    if (vehicle_color)  { vehicleUpdates.push(`color = $${k++}`);  vehicleVals.push(vehicle_color); }
+    if (vehicleUpdates.length && driverId) {
+      vehicleVals.push(driverId);
+      await query(
+        `UPDATE vehicles SET ${vehicleUpdates.join(', ')} WHERE driver_id = $${k} AND is_active = TRUE`,
+        vehicleVals
       );
     }
 
@@ -176,7 +194,7 @@ const getRides = async (req, res, next) => {
 
     const { rows } = await query(
       `SELECT
-         r.id, r.status, r.vehicle_type,
+         r.id, r.status, r.ride_type AS vehicle_type,
          r.pickup_address, r.drop_address,
          r.final_fare, r.estimated_fare, r.distance_km, r.duration_min,
          r.created_at, r.completed_at,
@@ -184,11 +202,11 @@ const getRides = async (req, res, next) => {
          rv.rating AS user_rating
        FROM rides r
        JOIN users u ON u.id = r.user_id
-       LEFT JOIN ride_reviews rv ON rv.ride_id = r.id AND rv.driver_id = $1
+       LEFT JOIN reviews rv ON rv.ride_id = r.id AND rv.reviewee_id = $2 AND rv.reviewer_type = 'user'
        WHERE r.driver_id = $1
        ORDER BY r.created_at DESC
-       LIMIT $2 OFFSET $3`,
-      [driverRows[0].id, limit, offset]
+       LIMIT $3 OFFSET $4`,
+      [driverRows[0].id, req.user.id, limit, offset]
     );
 
     const { rows: countRows } = await query(
@@ -233,13 +251,11 @@ const getEarnings = async (req, res, next) => {
       `SELECT
          ${groupBy} AS period_start,
          COUNT(*) AS total_rides,
-         SUM(COALESCE(final_fare, estimated_fare)) AS gross_earnings,
-         SUM(COALESCE(final_fare, estimated_fare) * 0.80) AS net_earnings,
-         AVG(COALESCE(final_fare, estimated_fare)) AS avg_fare
-       FROM rides
+         SUM(gross_amount) AS gross_earnings,
+         SUM(net_amount) AS net_earnings,
+         AVG(gross_amount) AS avg_fare
+       FROM driver_earnings
        WHERE driver_id = $1
-         AND status = 'completed'
-         AND completed_at IS NOT NULL
        GROUP BY period_start
        ORDER BY period_start DESC
        LIMIT 12`,
@@ -249,8 +265,8 @@ const getEarnings = async (req, res, next) => {
     const totalResult = await query(
       `SELECT
          COUNT(*) AS total_rides,
-         SUM(COALESCE(final_fare, estimated_fare)) AS total_gross
-       FROM rides WHERE driver_id = $1 AND status = 'completed'`,
+         SUM(gross_amount) AS total_gross
+       FROM driver_earnings WHERE driver_id = $1`,
       [driverId]
     );
 
@@ -281,13 +297,13 @@ const getRatings = async (req, res, next) => {
          rr.id, rr.rating, rr.comment, rr.sentiment, rr.created_at,
          u.name AS reviewer_name,
          r.pickup_address, r.drop_address
-       FROM ride_reviews rr
+       FROM reviews rr
        JOIN users u ON u.id = rr.reviewer_id
        JOIN rides r ON r.id = rr.ride_id
-       WHERE rr.driver_id = $1
+       WHERE rr.reviewee_id = $1 AND rr.reviewer_type = 'user'
        ORDER BY rr.created_at DESC
        LIMIT 50`,
-      [driverRows[0].id]
+      [req.user.id]
     );
 
     return res.status(200).json({
@@ -425,6 +441,23 @@ const updateRideStatus = async (req, res, next) => {
       await query(
         "UPDATE drivers SET status = 'online', current_ride_id = NULL, last_ride_ended_at = NOW() WHERE id = $1",
         [driverRows[0].id]
+      );
+
+      const ride = rows[0];
+      const fare = parseFloat(ride.final_fare || ride.estimated_fare || 0);
+      const commission = parseFloat((fare * 0.20).toFixed(2));
+      const net = parseFloat((fare - commission).toFixed(2));
+
+      await query(
+        `INSERT INTO driver_earnings (driver_id, ride_id, gross_amount, commission, net_amount)
+         VALUES ($1, $2, $3, $4, $5)`,
+        [driverRows[0].id, ride.id, fare, commission, net]
+      );
+
+      await query(
+        `INSERT INTO payments (ride_id, user_id, amount, method, status, paid_at)
+         VALUES ($1, $2, $3, 'cash', 'paid', NOW())`,
+        [ride.id, ride.user_id, fare]
       );
     }
 

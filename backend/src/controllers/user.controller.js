@@ -118,17 +118,18 @@ const getRideHistory = async (req, res, next) => {
 
     const { rows } = await query(
       `SELECT
-         r.id, r.status, r.vehicle_type, r.pickup_address,
+         r.id, r.status, r.ride_type AS vehicle_type, r.pickup_address,
          r.drop_address, r.estimated_fare, r.final_fare,
          r.pickup_lat, r.pickup_lng, r.drop_lat, r.drop_lng,
          r.created_at, r.completed_at,
          d.id AS driver_id, u.name AS driver_name,
-         d.vehicle_number, d.avg_rating AS driver_rating,
+         v.plate_number AS vehicle_number, d.rating AS driver_rating,
          rv.rating AS user_rating
        FROM rides r
        LEFT JOIN drivers d ON d.id = r.driver_id
+       LEFT JOIN vehicles v ON v.driver_id = d.id AND v.is_active = TRUE
        LEFT JOIN users u ON u.id = d.user_id
-       LEFT JOIN ride_reviews rv ON rv.ride_id = r.id AND rv.reviewer_id = r.user_id
+       LEFT JOIN reviews rv ON rv.ride_id = r.id AND rv.reviewer_id = r.user_id AND rv.reviewer_type = 'user'
        WHERE r.user_id = $1
        ORDER BY r.created_at DESC
        LIMIT $2 OFFSET $3`,
@@ -163,7 +164,7 @@ const getFavorites = async (req, res, next) => {
   try {
     const { rows } = await query(
       `SELECT id, label, address, lat, lng, created_at
-       FROM user_favorites
+       FROM favorite_locations
        WHERE user_id = $1
        ORDER BY created_at DESC`,
       [req.user.id]
@@ -184,7 +185,7 @@ const addFavorite = async (req, res, next) => {
     const { label, address, lat, lng } = req.body;
 
     const { rows } = await query(
-      `INSERT INTO user_favorites (user_id, label, address, lat, lng)
+      `INSERT INTO favorite_locations (user_id, label, address, lat, lng)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING id, label, address, lat, lng, created_at`,
       [req.user.id, label, address, lat, lng]
@@ -206,7 +207,7 @@ const deleteFavorite = async (req, res, next) => {
     const { id } = req.params;
 
     const result = await query(
-      'DELETE FROM user_favorites WHERE id = $1 AND user_id = $2',
+      'DELETE FROM favorite_locations WHERE id = $1 AND user_id = $2',
       [id, req.user.id]
     );
 
@@ -230,7 +231,7 @@ const deleteFavorite = async (req, res, next) => {
 const getNotifications = async (req, res, next) => {
   try {
     const { rows } = await query(
-      `SELECT id, type, title, body, is_read, metadata, created_at
+      `SELECT id, type, title, message AS body, is_read, created_at
        FROM notifications
        WHERE user_id = $1
        ORDER BY created_at DESC

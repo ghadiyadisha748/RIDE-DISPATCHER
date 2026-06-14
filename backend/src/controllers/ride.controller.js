@@ -101,7 +101,7 @@ const bookRide = async (req, res, next) => {
     const rideId = uuidv4();
     const { rows: rideRows } = await client.query(
       `INSERT INTO rides
-         (id, user_id, vehicle_type, status,
+         (id, user_id, ride_type, status,
           pickup_lat, pickup_lng, pickup_address,
           drop_lat, drop_lng, drop_address,
           estimated_fare, surge_multiplier, distance_km, duration_min)
@@ -183,11 +183,12 @@ const getRide = async (req, res, next) => {
          r.*,
          u.name AS user_name, u.phone AS user_phone,
          du.name AS driver_name, du.phone AS driver_phone,
-         d.vehicle_number, d.vehicle_model, d.avg_rating AS driver_rating,
+         v.plate_number AS vehicle_number, v.model AS vehicle_model, d.rating AS driver_rating,
          d.current_lat AS driver_lat, d.current_lng AS driver_lng
        FROM rides r
        JOIN users u ON u.id = r.user_id
        LEFT JOIN drivers d ON d.id = r.driver_id
+       LEFT JOIN vehicles v ON v.driver_id = d.id AND v.is_active = TRUE
        LEFT JOIN users du ON du.id = d.user_id
        WHERE r.id = $1`,
       [id]
@@ -262,9 +263,10 @@ const getRideStatus = async (req, res, next) => {
       `SELECT r.id, r.status, r.driver_id,
               d.current_lat, d.current_lng,
               du.name AS driver_name, du.phone AS driver_phone,
-              d.vehicle_number, d.avg_rating
+              v.plate_number AS vehicle_number, d.rating AS avg_rating
        FROM rides r
        LEFT JOIN drivers d ON d.id = r.driver_id
+       LEFT JOIN vehicles v ON v.driver_id = d.id AND v.is_active = TRUE
        LEFT JOIN users du ON du.id = d.user_id
        WHERE r.id = $1`,
       [id]
@@ -304,7 +306,7 @@ const submitReview = async (req, res, next) => {
 
     // Check for duplicate review
     const existing = await query(
-      'SELECT id FROM ride_reviews WHERE ride_id = $1 AND reviewer_id = $2',
+      "SELECT id FROM reviews WHERE ride_id = $1 AND reviewer_id = $2 AND reviewer_type = 'user'",
       [rideId, req.user.id]
     );
     if (existing.rowCount > 0) {
@@ -318,19 +320,12 @@ const submitReview = async (req, res, next) => {
       if (sentimentResult.ok) sentiment = sentimentResult.data.sentiment;
     }
 
+    // DB Trigger automatically updates driver rating!
     const { rows } = await query(
-      `INSERT INTO ride_reviews (ride_id, reviewer_id, driver_id, rating, comment, sentiment)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO reviews (ride_id, reviewer_id, reviewee_id, rating, comment, sentiment, reviewer_type)
+       VALUES ($1, $2, (SELECT user_id FROM drivers WHERE id = $3), $4, $5, $6, 'user')
        RETURNING id, rating, comment, sentiment, created_at`,
       [rideId, req.user.id, rideRows[0].driver_id, rating, comment, sentiment]
-    );
-
-    // Update driver's average rating
-    await query(
-      `UPDATE drivers SET avg_rating = (
-         SELECT AVG(rating)::numeric(3,2) FROM ride_reviews WHERE driver_id = $1
-       ) WHERE id = $1`,
-      [rideRows[0].driver_id]
     );
 
     console.log(`[Ride] ⭐ Review submitted for ride ${rideId}`);
@@ -350,17 +345,19 @@ const getReceipt = async (req, res, next) => {
     const { id } = req.params;
     const { rows } = await query(
       `SELECT
-         r.id, r.status, r.vehicle_type,
+         r.id, r.status, r.ride_type AS vehicle_type,
          r.pickup_address, r.drop_address,
          r.estimated_fare, r.final_fare, r.surge_multiplier,
          r.distance_km, r.duration_min,
          r.created_at, r.completed_at,
-         r.payment_method, r.payment_status,
+         p.method AS payment_method, p.status AS payment_status,
          u.name AS user_name, u.email AS user_email,
-         du.name AS driver_name, d.vehicle_number
+         du.name AS driver_name, v.plate_number AS vehicle_number
        FROM rides r
+       LEFT JOIN payments p ON p.ride_id = r.id
        JOIN users u ON u.id = r.user_id
        LEFT JOIN drivers d ON d.id = r.driver_id
+       LEFT JOIN vehicles v ON v.driver_id = d.id AND v.is_active = TRUE
        LEFT JOIN users du ON du.id = d.user_id
        WHERE r.id = $1 AND r.user_id = $2 AND r.status = 'completed'`,
       [id, req.user.id]

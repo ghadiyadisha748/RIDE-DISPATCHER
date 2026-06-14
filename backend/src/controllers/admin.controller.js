@@ -133,15 +133,16 @@ const getDrivers = async (req, res, next) => {
 
     const { rows } = await query(
       `SELECT
-         d.id, d.vehicle_type, d.vehicle_number, d.vehicle_model,
-         d.avg_rating, d.total_rides, d.completion_rate, d.status,
-         d.is_verified, d.verification_status, d.city, d.created_at,
-         u.name, u.email, u.phone, u.is_active,
-         (d.avg_rating / 5.0 * 0.5 + d.completion_rate / 100.0 * 0.5) AS performance_score
+         d.id, v.vehicle_type, v.plate_number AS vehicle_number, v.model AS vehicle_model,
+         d.rating AS avg_rating, d.total_rides, d.completion_rate, d.status,
+         d.is_verified, d.is_active, d.current_city AS city, d.joined_at AS created_at,
+         u.name, u.email, u.phone,
+         (d.rating / 5.0 * 0.5 + d.completion_rate / 100.0 * 0.5) AS performance_score
        FROM drivers d
        JOIN users u ON u.id = d.user_id
+       LEFT JOIN vehicles v ON v.driver_id = d.id AND v.is_active = TRUE
        ${whereStr}
-       ORDER BY performance_score DESC, d.created_at DESC
+       ORDER BY performance_score DESC, d.joined_at DESC
        LIMIT $1 OFFSET $2`,
       params
     );
@@ -259,8 +260,8 @@ const getComplaints = async (req, res, next) => {
 
     const { rows } = await query(
       `SELECT
-         c.id, c.type, c.subject, c.description, c.status,
-         c.created_at, c.resolved_at, c.resolution_note,
+         c.id, c.category AS type, c.category AS subject, c.description, c.status,
+         c.created_at, c.resolved_at, c.resolution AS resolution_note,
          u.name AS user_name, u.email AS user_email,
          r.id AS ride_id
        FROM complaints c
@@ -297,11 +298,11 @@ const updateComplaint = async (req, res, next) => {
 
     const { rows } = await query(
       `UPDATE complaints
-       SET status = $1, resolution_note = $2,
+       SET status = $1, resolution = $2,
            resolved_at = CASE WHEN $1 IN ('resolved','closed') THEN NOW() ELSE NULL END,
            updated_at = NOW()
        WHERE id = $3
-       RETURNING id, status, resolution_note, resolved_at`,
+       RETURNING id, status, resolution AS resolution_note, resolved_at`,
       [status, resolution_note, id]
     );
 
@@ -325,20 +326,21 @@ const getRevenue = async (req, res, next) => {
     const { period = 'daily' } = req.query;
     const groupBy =
       period === 'monthly'
-        ? "DATE_TRUNC('month', completed_at)"
+        ? "DATE_TRUNC('month', p.paid_at)"
         : period === 'weekly'
-        ? "DATE_TRUNC('week', completed_at)"
-        : "DATE_TRUNC('day', completed_at)";
+        ? "DATE_TRUNC('week', p.paid_at)"
+        : "DATE_TRUNC('day', p.paid_at)";
 
     const { rows } = await query(
       `SELECT
          ${groupBy} AS period,
          COUNT(*) AS total_rides,
-         SUM(COALESCE(final_fare, estimated_fare)) AS gross_revenue,
-         SUM(COALESCE(final_fare, estimated_fare) * 0.20) AS platform_commission,
-         AVG(COALESCE(final_fare, estimated_fare)) AS avg_fare
-       FROM rides
-       WHERE status = 'completed' AND completed_at IS NOT NULL
+         SUM(p.amount) AS gross_revenue,
+         SUM(e.commission) AS platform_commission,
+         AVG(p.amount) AS avg_fare
+       FROM payments p
+       LEFT JOIN driver_earnings e ON e.ride_id = p.ride_id
+       WHERE p.status = 'completed' AND p.paid_at IS NOT NULL
        GROUP BY period
        ORDER BY period DESC
        LIMIT 30`
@@ -362,13 +364,13 @@ const getDemandAnalytics = async (req, res, next) => {
     // DB-based demand by area/hour
     const { rows } = await query(
       `SELECT
-         EXTRACT(HOUR FROM created_at) AS hour,
-         COUNT(*) AS ride_count,
+         hour_of_day AS hour,
+         SUM(actual_demand) AS ride_count,
          AVG(surge_multiplier) AS avg_surge
-       FROM rides
-       WHERE pickup_address ILIKE $1
-       GROUP BY hour
-       ORDER BY hour`,
+       FROM demand_analytics
+       WHERE area_name ILIKE $1
+       GROUP BY hour_of_day
+       ORDER BY hour_of_day`,
       [`%${area}%`]
     );
 
