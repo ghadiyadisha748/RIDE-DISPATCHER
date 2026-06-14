@@ -1,0 +1,2 @@
+# This directory stores trained ML model files (.joblib)
+# Models are auto-trained on first startup if not found here.

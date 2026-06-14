@@ -1,0 +1,269 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================================
+   RIDE-DISPATCHER — Global Styles
+   ================================================================ */
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    @apply scroll-smooth;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  body {
+    @apply font-sans antialiased;
+    @apply bg-light-bg text-gray-900;
+    @apply dark:bg-dark-bg dark:text-gray-100;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  ::selection { @apply bg-brand-500/30 text-brand-200; }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { @apply bg-transparent; }
+  ::-webkit-scrollbar-thumb { @apply bg-brand-500/40 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-brand-500/60; }
+
+  h1, h2, h3, h4, h5, h6 { @apply font-display font-bold tracking-tight; }
+}
+
+/* ================================================================
+   COMPONENT LAYER — Reusable Design System Classes
+   ================================================================ */
+@layer components {
+
+  /* ── Buttons ── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 font-semibold rounded-xl;
+    @apply transition-all duration-200 ease-out;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-500;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-sm  { @apply btn px-4 py-2 text-sm; }
+  .btn-md  { @apply btn px-6 py-3 text-sm; }
+  .btn-lg  { @apply btn px-8 py-4 text-base; }
+  .btn-xl  { @apply btn px-10 py-5 text-lg; }
+
+  .btn-primary {
+    @apply btn bg-brand-gradient text-white shadow-brand;
+    @apply hover:shadow-glow hover:scale-[1.02] active:scale-[0.98];
+  }
+  .btn-secondary {
+    @apply btn bg-white/10 border border-white/20 text-white backdrop-blur-sm;
+    @apply hover:bg-white/20 hover:border-white/30 active:scale-[0.98];
+    @apply dark:bg-dark-card dark:border-dark-border;
+  }
+  .btn-outline {
+    @apply btn border-2 border-brand-500 text-brand-500;
+    @apply hover:bg-brand-500 hover:text-white active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply btn text-gray-600 dark:text-gray-300;
+    @apply hover:bg-gray-100 dark:hover:bg-dark-card active:scale-[0.98];
+  }
+  .btn-danger {
+    @apply btn bg-danger-500 text-white;
+    @apply hover:bg-danger-600 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] active:scale-[0.98];
+  }
+
+  /* ── Cards ── */
+  .card {
+    @apply rounded-2xl border;
+    @apply bg-light-surface border-light-border;
+    @apply dark:bg-dark-card dark:border-dark-border;
+    @apply shadow-card transition-all duration-200;
+  }
+  .card-glass {
+    @apply rounded-2xl border border-white/10 backdrop-blur-md;
+    @apply bg-glass shadow-card;
+  }
+  .card-hover {
+    @apply card hover:shadow-brand hover:-translate-y-1 cursor-pointer;
+  }
+  .card-glow {
+    @apply card shadow-glow border-brand-500/20;
+    @apply hover:shadow-brand transition-shadow duration-300;
+  }
+
+  /* ── Inputs ── */
+  .input {
+    @apply w-full rounded-xl border px-4 py-3 text-sm font-medium;
+    @apply bg-light-surface border-light-border text-gray-900 placeholder-gray-400;
+    @apply dark:bg-dark-card dark:border-dark-border dark:text-gray-100 dark:placeholder-gray-500;
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-500/50 focus:border-brand-500;
+    @apply transition-all duration-200;
+  }
+  .input-error { @apply input border-danger-500 focus:ring-danger-500/50; }
+  .label       { @apply block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5; }
+
+  /* ── Badges ── */
+  .badge { @apply inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold; }
+  .badge-brand   { @apply badge bg-brand-500/10 text-brand-500 border border-brand-500/20; }
+  .badge-success { @apply badge bg-success-500/10 text-success-500 border border-success-500/20; }
+  .badge-warning { @apply badge bg-warning-500/10 text-warning-500 border border-warning-500/20; }
+  .badge-danger  { @apply badge bg-danger-500/10 text-danger-500 border border-danger-500/20; }
+  .badge-muted   { @apply badge bg-gray-100 text-gray-600 dark:bg-dark-muted dark:text-gray-400; }
+
+  /* ── Section helpers ── */
+  .section       { @apply py-20 md:py-28; }
+  .section-title { @apply text-3xl md:text-4xl lg:text-5xl font-display font-bold tracking-tight; }
+  .section-sub   { @apply text-base md:text-lg text-gray-500 dark:text-gray-400 max-w-2xl; }
+  .container-rd  { @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8; }
+
+  /* ── Gradient text ── */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #5469ff 0%, #a78bfa 50%, #f97316 100%);
+  }
+  .text-gradient-blue {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #5469ff 0%, #818cf8 100%);
+  }
+
+  /* ── Stat cards ── */
+  .stat-card {
+    @apply card p-6 flex flex-col gap-2;
+    @apply hover:border-brand-500/30 transition-colors duration-300;
+  }
+  .stat-value { @apply text-3xl font-display font-bold text-gray-900 dark:text-white; }
+  .stat-label { @apply text-sm text-gray-500 dark:text-gray-400 font-medium; }
+
+  /* ── Navigation ── */
+  .nav-link {
+    @apply text-sm font-medium text-gray-600 dark:text-gray-300;
+    @apply hover:text-brand-500 dark:hover:text-brand-400;
+    @apply transition-colors duration-200;
+  }
+  .nav-link-active { @apply nav-link text-brand-500 dark:text-brand-400; }
+
+  /* ── Table ── */
+  .table-wrapper { @apply w-full overflow-x-auto rounded-2xl border border-light-border dark:border-dark-border; }
+  .table-rd { @apply w-full text-sm; }
+  .table-rd thead { @apply bg-light-card dark:bg-dark-surface; }
+  .table-rd th { @apply px-4 py-3 text-left font-semibold text-gray-600 dark:text-gray-400 text-xs uppercase tracking-wider; }
+  .table-rd td { @apply px-4 py-3 text-gray-800 dark:text-gray-200 border-t border-light-border dark:border-dark-border; }
+  .table-rd tbody tr { @apply hover:bg-brand-50 dark:hover:bg-dark-card transition-colors duration-150; }
+
+  /* ── Map container ── */
+  .map-container { @apply relative rounded-2xl overflow-hidden border border-light-border dark:border-dark-border; }
+
+  /* ── Sidebar ── */
+  .sidebar { @apply flex flex-col h-full bg-dark-surface border-r border-dark-border; }
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium;
+    @apply text-gray-400 hover:text-white hover:bg-dark-card;
+    @apply transition-all duration-200 cursor-pointer;
+  }
+  .sidebar-item-active { @apply sidebar-item text-white bg-brand-500/20 border border-brand-500/30; }
+
+  /* ── Loaders ── */
+  .skeleton {
+    @apply rounded-lg bg-gray-200 dark:bg-dark-muted animate-pulse;
+  }
+  .spinner {
+    @apply w-6 h-6 border-2 border-brand-500/30 border-t-brand-500 rounded-full animate-spin;
+  }
+
+  /* ── Glass panel ── */
+  .glass-panel {
+    @apply rounded-2xl border border-white/10 backdrop-blur-xl;
+    background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  }
+
+  /* ── Divider with label ── */
+  .divider {
+    @apply flex items-center gap-4 text-xs text-gray-400 dark:text-gray-600;
+  }
+  .divider::before, .divider::after {
+    content: '';
+    @apply flex-1 border-t border-gray-200 dark:border-dark-border;
+  }
+
+  /* ── Ride status indicators ── */
+  .status-dot { @apply w-2 h-2 rounded-full; }
+  .status-requested   { @apply status-dot bg-warning-500 animate-pulse; }
+  .status-assigned    { @apply status-dot bg-brand-500 animate-pulse; }
+  .status-in_progress { @apply status-dot bg-success-500; }
+  .status-completed   { @apply status-dot bg-success-500; }
+  .status-cancelled   { @apply status-dot bg-danger-500; }
+
+  /* ── SOS Button ── */
+  .sos-btn {
+    @apply fixed bottom-6 right-6 z-50;
+    @apply w-14 h-14 rounded-full bg-danger-500 text-white font-bold text-sm;
+    @apply flex items-center justify-center shadow-[0_0_30px_rgba(239,68,68,0.5)];
+    @apply hover:shadow-[0_0_50px_rgba(239,68,68,0.7)] hover:scale-110;
+    @apply transition-all duration-200 animate-pulse-brand;
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+}
+
+/* ================================================================
+   UTILITY OVERRIDES
+   ================================================================ */
+@layer utilities {
+  .text-balance    { text-wrap: balance; }
+  .scrollbar-hide  { -ms-overflow-style: none; scrollbar-width: none; }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+
+  /* Shimmer loading effect */
+  .shimmer-bg {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+
+  /* Noise texture overlay */
+  .noise::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    border-radius: inherit;
+  }
+}
+
+/* ================================================================
+   LEAFLET MAP DARK MODE OVERRIDES
+   ================================================================ */
+.dark .leaflet-layer,
+.dark .leaflet-control-zoom,
+.dark .leaflet-control-attribution {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+.dark .leaflet-marker-icon { filter: none; }
+.dark .leaflet-popup-content-wrapper {
+  @apply bg-dark-card border border-dark-border text-white;
+}
+.dark .leaflet-popup-tip { @apply bg-dark-card; }
+
+/* Driver marker pulse animation */
+@keyframes markerPulse {
+  0%   { transform: scale(1); opacity: 1; }
+  50%  { transform: scale(1.4); opacity: 0.6; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+.driver-marker-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: rgba(84, 105, 255, 0.4);
+  animation: markerPulse 2s ease-out infinite;
+}
+
+/* ================================================================
+   PAGE TRANSITIONS
+   ================================================================ */
+.page-enter        { opacity: 0; transform: translateY(8px); }
+.page-enter-active { opacity: 1; transform: translateY(0); transition: all 0.3s ease-out; }
+.page-exit         { opacity: 1; }
+.page-exit-active  { opacity: 0; transition: opacity 0.2s ease-in; }
