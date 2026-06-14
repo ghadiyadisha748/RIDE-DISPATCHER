@@ -9,7 +9,9 @@ import Landing       from './pages/public/Landing';
 import About         from './pages/public/About';
 import Login         from './pages/public/Login';
 import Register      from './pages/public/Register';
-import ForgotPassword from './pages/public/ForgotPassword';
+import ForgotPassword   from './pages/public/ForgotPassword';
+import ResetPassword    from './pages/public/ResetPassword';
+import VerifyEmail      from './pages/public/VerifyEmail';
 
 // User pages
 import UserDashboard      from './pages/user/UserDashboard';
@@ -66,7 +68,9 @@ function AppRoutes() {
         <Route path="/about"    element={<About />} />
         <Route path="/login"    element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/forgot-password"          element={<ForgotPassword />} />
+        <Route path="/reset-password/:token"     element={<ResetPassword />} />
+        <Route path="/verify-email/:token"        element={<VerifyEmail />} />
 
         {/* User routes */}
         <Route path="/dashboard"        element={<PrivateRoute roles={['user']}><UserDashboard /></PrivateRoute>} />

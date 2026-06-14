@@ -8,7 +8,7 @@
 -- ============================================================
 
 -- Passwords are bcrypt hash of 'Password@123'
-INSERT INTO users (id, name, email, phone, password_hash, role, is_verified, is_active, city) VALUES
+INSERT INTO users (id, name, email, phone, password_hash, role, is_email_verified, is_active, city) VALUES
 -- Admins
 ('a1000000-0000-0000-0000-000000000001', 'Disha Ghadiya',   'disha@ridedispatcher.in',   '9900000001', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TcGc7TgV0/bCg8iyCHX3bBM5SRxO', 'admin', TRUE, TRUE, 'Surat'),
 ('a1000000-0000-0000-0000-000000000002', 'Anshika Badala',  'anshika@ridedispatcher.in', '9900000002', '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TcGc7TgV0/bCg8iyCHX3bBM5SRxO', 'admin', TRUE, TRUE, 'Surat'),

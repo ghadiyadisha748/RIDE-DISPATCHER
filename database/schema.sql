@@ -33,22 +33,24 @@ CREATE TYPE demand_level AS ENUM ('low', 'medium', 'high', 'surge');
 -- ============================================================
 
 CREATE TABLE users (
-    id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    name          VARCHAR(100) NOT NULL,
-    email         VARCHAR(150) UNIQUE NOT NULL,
-    phone         VARCHAR(15) UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    profile_pic   TEXT,
-    role          user_role NOT NULL DEFAULT 'user',
-    is_verified   BOOLEAN DEFAULT FALSE,
-    is_active     BOOLEAN DEFAULT TRUE,
-    city          VARCHAR(50) DEFAULT 'Surat',
-    refresh_token TEXT,
-    reset_token   TEXT,
-    reset_token_expiry TIMESTAMP,
-    last_login    TIMESTAMP,
-    created_at    TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at    TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    id                     UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name                   VARCHAR(100) NOT NULL,
+    email                  VARCHAR(150) UNIQUE NOT NULL,
+    phone                  VARCHAR(15) UNIQUE NOT NULL,
+    password_hash          TEXT NOT NULL,
+    profile_pic            TEXT,
+    role                   user_role NOT NULL DEFAULT 'user',
+    is_email_verified      BOOLEAN DEFAULT FALSE,
+    is_active              BOOLEAN DEFAULT TRUE,
+    city                   VARCHAR(50) DEFAULT 'Surat',
+    refresh_token_hash     TEXT,
+    reset_password_token   TEXT,
+    reset_password_expires TIMESTAMP WITH TIME ZONE,
+    email_verify_token     TEXT,
+    email_verify_expires   TIMESTAMP WITH TIME ZONE,
+    last_login             TIMESTAMP,
+    created_at             TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at             TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 CREATE INDEX idx_users_email ON users(email);

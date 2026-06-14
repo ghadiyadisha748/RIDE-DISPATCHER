@@ -22,11 +22,15 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
-        manualChunks: {
-          vendor:   ['react', 'react-dom', 'react-router-dom'],
-          maps:     ['leaflet', 'react-leaflet'],
-          charts:   ['recharts'],
-          utils:    ['axios', 'socket.io-client', 'date-fns'],
+        manualChunks(id) {
+          if (id.includes('react-dom') || id.includes('react-router-dom') || id.includes('/react/'))
+            return 'vendor';
+          if (id.includes('leaflet'))
+            return 'maps';
+          if (id.includes('recharts'))
+            return 'charts';
+          if (id.includes('axios') || id.includes('socket.io-client') || id.includes('date-fns'))
+            return 'utils';
         },
       },
     },
