@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   MapPin, Zap, Shield, Star, ChevronDown, ChevronRight,
   Car, Bike, Navigation, Clock, TrendingUp, Users, Award,
-  CheckCircle, Phone, Mail, Twitter, Instagram, Linkedin,
+  CheckCircle, Phone, Mail,
   ArrowRight, Play, Brain, BarChart3, Route, Sparkles,
   Menu, X, Moon, Sun, Quote
 } from 'lucide-react';
@@ -30,9 +30,8 @@ function Navbar() {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'py-3 bg-dark-bg/90 backdrop-blur-xl border-b border-dark-border shadow-lg' : 'py-5'
-    }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'py-3 bg-dark-bg/90 backdrop-blur-xl border-b border-dark-border shadow-lg' : 'py-5'
+      }`}>
       <div className="container-rd flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2 group">
@@ -139,7 +138,7 @@ function HeroSection() {
             </h1>
 
             <p className="text-gray-400 text-lg md:text-xl max-w-xl mx-auto lg:mx-0 mb-10 leading-relaxed">
-              RIDE-DISPATCHER uses machine learning to match you with the best driver, predict fares accurately, 
+              RIDE-DISPATCHER uses machine learning to match you with the best driver, predict fares accurately,
               and ensure you reach your destination safely — every single time.
             </p>
 
@@ -158,9 +157,9 @@ function HeroSection() {
             <div className="flex flex-wrap gap-8 justify-center lg:justify-start">
               {[
                 { value: '50K+', label: 'Happy Riders' },
-                { value: '2K+',  label: 'Verified Drivers' },
+                { value: '2K+', label: 'Verified Drivers' },
                 { value: '4.8★', label: 'App Rating' },
-                { value: '4',    label: 'Gujarat Cities' },
+                { value: '4', label: 'Gujarat Cities' },
               ].map(s => (
                 <div key={s.label} className="text-center">
                   <div className="text-2xl font-display font-black text-white">{s.value}</div>
@@ -258,21 +257,21 @@ function HeroSection() {
 
 // ── Features ─────────────────────────────────────────────────────────────────
 const features = [
-  { icon: Brain,     color: 'brand',  title: 'AI-Smart Dispatch',   desc: 'Our ML engine scores and ranks drivers by proximity, rating, and completion rate in milliseconds.' },
-  { icon: TrendingUp,color: 'accent', title: 'Fare Prediction',     desc: 'Random Forest model predicts your fare based on distance, traffic, time, and surge demand.' },
-  { icon: Shield,    color: 'success',title: 'Fraud Detection',      desc: 'Isolation Forest anomaly detection flags suspicious patterns, protecting riders and drivers.' },
-  { icon: BarChart3, color: 'brand',  title: 'Demand Forecasting',  desc: 'XGBoost forecasts peak demand across Surat zones so drivers are ready before you need them.' },
-  { icon: Star,      color: 'warning',title: 'Sentiment Analysis',  desc: 'NLP classifier reads review sentiment to spotlight excellent drivers and catch bad actors.' },
-  { icon: MapPin,    color: 'success',title: 'Live Tracking',        desc: 'Real-time GPS tracking with Socket.IO. Watch your driver move toward you on the map.' },
-  { icon: Route,     color: 'accent', title: 'Smart Routing',       desc: 'Optimal routes using OpenStreetMap + OSRM with live traffic, seamlessly upgradeable to Google Maps.' },
-  { icon: Zap,       color: 'brand',  title: 'Instant Matching',    desc: 'Sub-second driver assignment with real-time push notifications via WebSockets.' },
+  { icon: Brain, color: 'brand', title: 'AI-Smart Dispatch', desc: 'Our ML engine scores and ranks drivers by proximity, rating, and completion rate in milliseconds.' },
+  { icon: TrendingUp, color: 'accent', title: 'Fare Prediction', desc: 'Random Forest model predicts your fare based on distance, traffic, time, and surge demand.' },
+  { icon: Shield, color: 'success', title: 'Fraud Detection', desc: 'Isolation Forest anomaly detection flags suspicious patterns, protecting riders and drivers.' },
+  { icon: BarChart3, color: 'brand', title: 'Demand Forecasting', desc: 'XGBoost forecasts peak demand across Surat zones so drivers are ready before you need them.' },
+  { icon: Star, color: 'warning', title: 'Sentiment Analysis', desc: 'NLP classifier reads review sentiment to spotlight excellent drivers and catch bad actors.' },
+  { icon: MapPin, color: 'success', title: 'Live Tracking', desc: 'Real-time GPS tracking with Socket.IO. Watch your driver move toward you on the map.' },
+  { icon: Route, color: 'accent', title: 'Smart Routing', desc: 'Optimal routes using OpenStreetMap + OSRM with live traffic, seamlessly upgradeable to Google Maps.' },
+  { icon: Zap, color: 'brand', title: 'Instant Matching', desc: 'Sub-second driver assignment with real-time push notifications via WebSockets.' },
 ];
 
 const colorMap = {
-  brand:   { bg: 'bg-brand-500/10',   icon: 'text-brand-400',   border: 'border-brand-500/20'   },
-  accent:  { bg: 'bg-accent-500/10',  icon: 'text-accent-500',  border: 'border-accent-500/20'  },
+  brand: { bg: 'bg-brand-500/10', icon: 'text-brand-400', border: 'border-brand-500/20' },
+  accent: { bg: 'bg-accent-500/10', icon: 'text-accent-500', border: 'border-accent-500/20' },
   success: { bg: 'bg-success-500/10', icon: 'text-success-500', border: 'border-success-500/20' },
-  warning: { bg: 'bg-warning-500/10', icon: 'text-yellow-400',  border: 'border-yellow-400/20'  },
+  warning: { bg: 'bg-warning-500/10', icon: 'text-yellow-400', border: 'border-yellow-400/20' },
 };
 
 function FeaturesSection() {
@@ -361,10 +360,10 @@ function HowItWorksSection() {
 
 // ── Ride Types ────────────────────────────────────────────────────────────────
 const rideTypes = [
-  { type: 'Auto',    icon: '🛺', base: '₹25', per: '₹8/km', desc: 'Affordable 3-wheeler for short trips', color: 'yellow' },
-  { type: 'Bike',    icon: '🏍️', base: '₹15', per: '₹5/km', desc: 'Fastest option to beat traffic',       color: 'green'  },
-  { type: 'Cab',     icon: '🚗', base: '₹40', per: '₹12/km',desc: 'Comfortable AC cab for any distance',  color: 'blue'   },
-  { type: 'Premium', icon: '🚘', base: '₹80', per: '₹20/km',desc: 'Luxury SUV for special occasions',     color: 'purple' },
+  { type: 'Auto', icon: '🛺', base: '₹25', per: '₹8/km', desc: 'Affordable 3-wheeler for short trips', color: 'yellow' },
+  { type: 'Bike', icon: '🏍️', base: '₹15', per: '₹5/km', desc: 'Fastest option to beat traffic', color: 'green' },
+  { type: 'Cab', icon: '🚗', base: '₹40', per: '₹12/km', desc: 'Comfortable AC cab for any distance', color: 'blue' },
+  { type: 'Premium', icon: '🚘', base: '₹80', per: '₹20/km', desc: 'Luxury SUV for special occasions', color: 'purple' },
 ];
 
 function RideTypesSection() {
@@ -398,12 +397,12 @@ function RideTypesSection() {
 // ── AI Features ───────────────────────────────────────────────────────────────
 function AIFeaturesSection() {
   const aiModules = [
-    { title: 'Fare Predictor',        tech: 'Random Forest', accuracy: '92%', icon: TrendingUp,  desc: 'Predicts ride fare from distance, traffic, time of day, and ride type with 92% accuracy.' },
-    { title: 'Smart Dispatch',        tech: 'KD-Tree + Scoring', accuracy: 'Real-time', icon: Zap, desc: 'Matches riders with the best driver using a multi-factor weighted scoring algorithm.' },
-    { title: 'Demand Forecaster',     tech: 'XGBoost',       accuracy: '88%', icon: BarChart3,   desc: 'Predicts surge zones across Surat, Ahmedabad, Vadodara, and Rajkot by hour and day.' },
-    { title: 'Sentiment Analyzer',    tech: 'TF-IDF + LR',   accuracy: '91%', icon: Star,        desc: 'Classifies rider reviews as positive, neutral, or negative to surface driver quality.' },
-    { title: 'Fraud Detector',        tech: 'Isolation Forest', accuracy: '94%', icon: Shield,   desc: 'Detects fake bookings, excessive cancellations, and suspicious account patterns.' },
-    { title: 'Driver Performance',    tech: 'Composite Score', accuracy: 'A–F Grade', icon: Award, desc: 'Scores drivers on rating, completion rate, response time, and customer feedback.' },
+    { title: 'Fare Predictor', tech: 'Random Forest', accuracy: '92%', icon: TrendingUp, desc: 'Predicts ride fare from distance, traffic, time of day, and ride type with 92% accuracy.' },
+    { title: 'Smart Dispatch', tech: 'KD-Tree + Scoring', accuracy: 'Real-time', icon: Zap, desc: 'Matches riders with the best driver using a multi-factor weighted scoring algorithm.' },
+    { title: 'Demand Forecaster', tech: 'XGBoost', accuracy: '88%', icon: BarChart3, desc: 'Predicts surge zones across Surat, Ahmedabad, Vadodara, and Rajkot by hour and day.' },
+    { title: 'Sentiment Analyzer', tech: 'TF-IDF + LR', accuracy: '91%', icon: Star, desc: 'Classifies rider reviews as positive, neutral, or negative to surface driver quality.' },
+    { title: 'Fraud Detector', tech: 'Isolation Forest', accuracy: '94%', icon: Shield, desc: 'Detects fake bookings, excessive cancellations, and suspicious account patterns.' },
+    { title: 'Driver Performance', tech: 'Composite Score', accuracy: 'A–F Grade', icon: Award, desc: 'Scores drivers on rating, completion rate, response time, and customer feedback.' },
   ];
 
   return (
@@ -532,10 +531,10 @@ function BenefitsSection() {
 // ── Stats ─────────────────────────────────────────────────────────────────────
 function StatsSection() {
   const stats = [
-    { value: '50,000+', label: 'Rides Completed',   desc: 'Across 4 Gujarat cities' },
-    { value: '4.8/5',   label: 'Average Rating',    desc: 'From verified riders' },
-    { value: '98%',     label: 'On-time Arrivals',  desc: 'AI dispatch accuracy' },
-    { value: '₹23 Cr+', label: 'Driver Earnings',   desc: 'Paid to partner drivers' },
+    { value: '50,000+', label: 'Rides Completed', desc: 'Across 4 Gujarat cities' },
+    { value: '4.8/5', label: 'Average Rating', desc: 'From verified riders' },
+    { value: '98%', label: 'On-time Arrivals', desc: 'AI dispatch accuracy' },
+    { value: '₹23 Cr+', label: 'Driver Earnings', desc: 'Paid to partner drivers' },
   ];
 
   return (
@@ -557,12 +556,12 @@ function StatsSection() {
 
 // ── Testimonials ──────────────────────────────────────────────────────────────
 const testimonials = [
-  { name: 'Arjun Mehta',    city: 'Vesu, Surat',   rating: 5, text: 'The AI fare prediction is spot on. I always know what I\'ll pay before I book. Never had a surprise charge!', role: 'Rider' },
-  { name: 'Ramesh Tadvi',   city: 'Katargam, Surat',rating: 5, text: 'As a driver, the smart dispatch means I spend zero time idle. Rides come to me — my earnings doubled.', role: 'Driver' },
-  { name: 'Priya Shah',     city: 'Adajan, Surat',  rating: 5, text: 'Love the live tracking feature. I shared my ride with family and they watched me reach safely. 10/10!', role: 'Rider' },
-  { name: 'Kiran Joshi',    city: 'Ahmedabad',      rating: 4, text: 'Best ride app in Gujarat. The premium cab service is actually premium — clean car, great driver.', role: 'Rider' },
-  { name: 'Nilesh Vasava',  city: 'SG Highway, Ahmedabad', rating: 5, text: 'The performance grade system motivates me to do better every day. Went from C to A in a month!', role: 'Driver' },
-  { name: 'Sanjana Kapoor', city: 'Vadodara',       rating: 5, text: 'Clean, fast, affordable. The SOS button gives me peace of mind for late-night rides. Highly recommended.', role: 'Rider' },
+  { name: 'Arjun Mehta', city: 'Vesu, Surat', rating: 5, text: 'The AI fare prediction is spot on. I always know what I\'ll pay before I book. Never had a surprise charge!', role: 'Rider' },
+  { name: 'Ramesh Tadvi', city: 'Katargam, Surat', rating: 5, text: 'As a driver, the smart dispatch means I spend zero time idle. Rides come to me — my earnings doubled.', role: 'Driver' },
+  { name: 'Priya Shah', city: 'Adajan, Surat', rating: 5, text: 'Love the live tracking feature. I shared my ride with family and they watched me reach safely. 10/10!', role: 'Rider' },
+  { name: 'Kiran Joshi', city: 'Ahmedabad', rating: 4, text: 'Best ride app in Gujarat. The premium cab service is actually premium — clean car, great driver.', role: 'Rider' },
+  { name: 'Nilesh Vasava', city: 'SG Highway, Ahmedabad', rating: 5, text: 'The performance grade system motivates me to do better every day. Went from C to A in a month!', role: 'Driver' },
+  { name: 'Sanjana Kapoor', city: 'Vadodara', rating: 5, text: 'Clean, fast, affordable. The SOS button gives me peace of mind for late-night rides. Highly recommended.', role: 'Rider' },
 ];
 
 function TestimonialsSection() {
@@ -607,13 +606,13 @@ function TestimonialsSection() {
 // ── FAQ ───────────────────────────────────────────────────────────────────────
 const faqs = [
   { q: 'What cities does RIDE-DISPATCHER operate in?', a: 'Currently available in Surat, Ahmedabad, Vadodara, and Rajkot — with Surat as our primary city. More Gujarat cities coming soon.' },
-  { q: 'How does the AI fare prediction work?',         a: 'Our Random Forest model trained on thousands of Indian rides predicts fare based on distance, traffic factor, time of day, day of week, and ride type. It achieves >92% accuracy.' },
-  { q: 'What ride types are available?',                a: 'Auto (₹25 base), Bike (₹15 base), Cab (₹40 base), and Premium SUV (₹80 base). All options are available 24×7.' },
-  { q: 'Is my ride tracking data private?',             a: 'Yes. Live location is only visible during the active ride and only to your booked driver and any emergency contacts you share your ride with.' },
-  { q: 'How does the driver rating system work?',       a: 'Riders rate drivers 1–5 stars after each ride. Our AI also runs sentiment analysis on text reviews and computes a composite performance score (A–F grade).' },
-  { q: 'What payment methods are accepted?',            a: 'Cash, UPI, digital wallet, and debit/credit card. All methods are available with secure transaction tracking.' },
-  { q: 'Can I become a driver?',                        a: 'Yes! Register with your driving license, Aadhaar, and vehicle details. Our admin team verifies your documents and activates your account within 24 hours.' },
-  { q: 'What is the SOS feature?',                      a: 'Press the red SOS button in-app during an active ride to instantly alert your emergency contacts with your live location and ride details.' },
+  { q: 'How does the AI fare prediction work?', a: 'Our Random Forest model trained on thousands of Indian rides predicts fare based on distance, traffic factor, time of day, day of week, and ride type. It achieves >92% accuracy.' },
+  { q: 'What ride types are available?', a: 'Auto (₹25 base), Bike (₹15 base), Cab (₹40 base), and Premium SUV (₹80 base). All options are available 24×7.' },
+  { q: 'Is my ride tracking data private?', a: 'Yes. Live location is only visible during the active ride and only to your booked driver and any emergency contacts you share your ride with.' },
+  { q: 'How does the driver rating system work?', a: 'Riders rate drivers 1–5 stars after each ride. Our AI also runs sentiment analysis on text reviews and computes a composite performance score (A–F grade).' },
+  { q: 'What payment methods are accepted?', a: 'Cash, UPI, digital wallet, and debit/credit card. All methods are available with secure transaction tracking.' },
+  { q: 'Can I become a driver?', a: 'Yes! Register with your driving license, Aadhaar, and vehicle details. Our admin team verifies your documents and activates your account within 24 hours.' },
+  { q: 'What is the SOS feature?', a: 'Press the red SOS button in-app during an active ride to instantly alert your emergency contacts with your live location and ride details.' },
 ];
 
 function FAQSection() {
@@ -660,7 +659,7 @@ function ContactSection() {
               Ready to<br /><span className="text-gradient">Get Moving?</span>
             </h2>
             <p className="text-gray-400 mb-8 leading-relaxed">
-              Join thousands of riders and drivers in Surat and across Gujarat. 
+              Join thousands of riders and drivers in Surat and across Gujarat.
               Sign up in 60 seconds and book your first AI-powered ride.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -731,7 +730,7 @@ function Footer() {
               AI-powered ride booking for Gujarat. Smart dispatch, real-time tracking, fair pricing.
             </p>
             <div className="flex gap-3">
-              {[Twitter, Instagram, Linkedin].map((Icon, i) => (
+              {[].map((Icon, i) => (
                 <a key={i} href="#" className="w-8 h-8 rounded-lg bg-dark-card border border-dark-border flex items-center justify-center text-gray-400 hover:text-brand-400 hover:border-brand-500/30 transition-all">
                   <Icon className="w-4 h-4" />
                 </a>
@@ -741,9 +740,9 @@ function Footer() {
 
           {/* Links */}
           {[
-            { title: 'Platform',  links: ['Book Ride', 'Driver Sign Up', 'Pricing', 'Cities'] },
-            { title: 'Company',   links: ['About Us', 'Careers', 'Blog', 'Press'] },
-            { title: 'Support',   links: ['Help Center', 'Safety', 'Contact', 'Terms & Privacy'] },
+            { title: 'Platform', links: ['Book Ride', 'Driver Sign Up', 'Pricing', 'Cities'] },
+            { title: 'Company', links: ['About Us', 'Careers', 'Blog', 'Press'] },
+            { title: 'Support', links: ['Help Center', 'Safety', 'Contact', 'Terms & Privacy'] },
           ].map(col => (
             <div key={col.title}>
               <h4 className="text-sm font-semibold text-white mb-4">{col.title}</h4>

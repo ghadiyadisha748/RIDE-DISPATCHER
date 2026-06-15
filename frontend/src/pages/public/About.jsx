@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Navigation, Brain, Zap, Target, Github, Linkedin, Mail, ArrowRight, Users, Star, CheckCircle } from 'lucide-react';
+import { Navigation, Brain, Zap, Target, Mail, ArrowRight, Users, Star, CheckCircle } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { Sun, Moon, Menu } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -81,7 +81,7 @@ export default function About() {
             <span className="text-gradient">Indian Urban Mobility</span>
           </h1>
           <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-            RIDE-DISPATCHER is a final-year engineering project that demonstrates how Artificial Intelligence can 
+            RIDE-DISPATCHER is a final-year engineering project that demonstrates how Artificial Intelligence can
             transform ride-hailing — from smarter dispatch to real-time fraud detection.
           </p>
         </div>
@@ -97,7 +97,7 @@ export default function About() {
               </div>
               <h2 className="text-2xl font-bold text-white mb-4">Our Vision</h2>
               <p className="text-gray-400 leading-relaxed">
-                To provide a <strong className="text-white">smart, reliable, affordable, and AI-powered</strong> ride-booking experience that 
+                To provide a <strong className="text-white">smart, reliable, affordable, and AI-powered</strong> ride-booking experience that
                 makes urban mobility accessible to everyone across Gujarat — from Surat to Rajkot.
               </p>
             </div>
@@ -107,7 +107,7 @@ export default function About() {
               </div>
               <h2 className="text-2xl font-bold text-white mb-4">Our Mission</h2>
               <p className="text-gray-400 leading-relaxed">
-                To <strong className="text-white">optimize ride dispatching and enhance transportation efficiency</strong> using Artificial Intelligence — 
+                To <strong className="text-white">optimize ride dispatching and enhance transportation efficiency</strong> using Artificial Intelligence —
                 proving that ML models can solve real-world logistics problems at scale.
               </p>
             </div>
@@ -146,8 +146,8 @@ export default function About() {
                 </div>
                 {/* Social */}
                 <div className="flex gap-3 pt-4 border-t border-dark-border">
-                  <a href={m.social.github}   className="text-gray-500 hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
-                  <a href={m.social.linkedin} className="text-gray-500 hover:text-brand-400 transition-colors"><Linkedin className="w-5 h-5" /></a>
+                  {/* <a href={m.social.github} className="text-gray-500 hover:text-white transition-colors"><Github className="w-5 h-5" /></a> */}
+                  {/* <a href={m.social.linkedin} className="text-gray-500 hover:text-brand-400 transition-colors"><Linkedin className="w-5 h-5" /></a> */}
                   <a href={`mailto:${m.social.email}`} className="text-gray-500 hover:text-accent-400 transition-colors"><Mail className="w-5 h-5" /></a>
                 </div>
               </div>
@@ -164,18 +164,18 @@ export default function About() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {[
-              { name: 'React.js',     color: 'text-cyan-400' },
+              { name: 'React.js', color: 'text-cyan-400' },
               { name: 'Tailwind CSS', color: 'text-teal-400' },
-              { name: 'Node.js',      color: 'text-green-400' },
-              { name: 'Express.js',   color: 'text-gray-300' },
-              { name: 'PostgreSQL',   color: 'text-blue-400' },
-              { name: 'Socket.IO',    color: 'text-white' },
-              { name: 'Python',       color: 'text-yellow-400' },
-              { name: 'FastAPI',      color: 'text-teal-300' },
+              { name: 'Node.js', color: 'text-green-400' },
+              { name: 'Express.js', color: 'text-gray-300' },
+              { name: 'PostgreSQL', color: 'text-blue-400' },
+              { name: 'Socket.IO', color: 'text-white' },
+              { name: 'Python', color: 'text-yellow-400' },
+              { name: 'FastAPI', color: 'text-teal-300' },
               { name: 'scikit-learn', color: 'text-orange-400' },
-              { name: 'XGBoost',      color: 'text-red-400' },
-              { name: 'Leaflet/OSM',  color: 'text-green-300' },
-              { name: 'JWT Auth',     color: 'text-brand-400' },
+              { name: 'XGBoost', color: 'text-red-400' },
+              { name: 'Leaflet/OSM', color: 'text-green-300' },
+              { name: 'JWT Auth', color: 'text-brand-400' },
             ].map(t => (
               <div key={t.name} className="card p-4 text-center hover:border-brand-500/30 transition-colors">
                 <div className={`text-sm font-bold ${t.color}`}>{t.name}</div>
